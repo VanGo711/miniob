@@ -439,7 +439,7 @@ RC PaxRecordPageHandler::insert_record(const char *data, RID *rid)
 
   int idx = 0;
   for(int i =0 ;i<page_header_->column_num;i++){
-    char* target_data = get_field_data(idx, i);
+    char* target_data = get_field_data(index, i);
     int col_len = get_field_len(i);
     memcpy(target_data, data + idx, col_len);
     idx += col_len;
@@ -500,7 +500,7 @@ RC PaxRecordPageHandler::get_record(const RID &rid, Record &record)
 
   int idx = 0;
   for(int i =0 ;i<page_header_->column_num;i++){
-    char* target_data = get_field_data(idx, i);
+    char* target_data = get_field_data(rid.slot_num, i);
     int col_len = get_field_len(i);
     memcpy(record_data + idx, target_data, col_len);
     idx += col_len;
