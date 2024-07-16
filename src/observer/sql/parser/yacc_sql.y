@@ -664,7 +664,10 @@ comp_op:
 // your code here
 group_by:
     /* empty */
-    GROUP BY expression_list
+    {
+      $$ = nullptr;
+    } 
+    | GROUP BY expression_list
     {
       $$ = $3;
     }
