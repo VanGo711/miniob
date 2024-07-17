@@ -20,8 +20,8 @@ using namespace common;
 
 AggregateVecPhysicalOperator::AggregateVecPhysicalOperator(vector<Expression *> &&expressions)
 {
-  aggregate_expressions_ = std::move(expressions);
-  value_expressions_.reserve(aggregate_expressions_.size());
+  aggregate_expressions_ = std::move(expressions); // 将表达式放入聚合表达式中
+  value_expressions_.reserve(aggregate_expressions_.size()); // 设置对应空间大小的聚合值
 
   ranges::for_each(aggregate_expressions_, [this](Expression *expr) {
     auto *      aggregate_expr = static_cast<AggregateExpr *>(expr);
@@ -101,7 +101,9 @@ void AggregateVecPhysicalOperator::update_aggregate_state(void *state, const Col
 RC AggregateVecPhysicalOperator::next(Chunk &chunk)
 {
   // your code here
-  exit(-1);
+  chunk.reset();
+  chunk.reference(output_chunk_);
+  return RC::SUCCESS;
 }
 
 RC AggregateVecPhysicalOperator::close()
