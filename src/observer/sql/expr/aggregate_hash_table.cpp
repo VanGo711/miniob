@@ -18,18 +18,40 @@ RC StandardAggregateHashTable::add_chunk(Chunk &groups_chunk, Chunk &aggrs_chunk
   for (int i = 0; i < groups_chunk.rows(); i++) {
     std::vector<Value> keys(groups_chunk.column_num());
     for (int j = 0; j < groups_chunk.column_num(); j++) {
-      keys[j] = groups_chunk.column_ptr(j)->get_value(i);
+      keys[j] = groups_chunk.get_value(j, i);
     }
+    std::vector<Value> values(aggrs_chunk.column_num());
+    for (int j = 0; j < aggrs_chunk.column_num(); j++) {
+      values[j] = aggrs_chunk.get_value(j, i);
+    }
+
     if (aggr_values_.find(keys) != aggr_values_.end()) {
-      aggr_values_[keys].emplace_back(aggrs_chunk.column_ptr(0)->get_value(i));
+      for (int j = 0; j < values.size(); j++) {
+        auto &target = aggr_values_[keys][j];
+        // 加法
+        if (target.attr_type() == AttrType::INTS) {
+          target.set_int(target.get_int() + values[j].get_int());
+        } else if (target.attr_type() == AttrType::FLOATS) {
+          target.set_float(target.get_float() + values[j].get_float());
+        } else {
+          ASSERT(false, "not supported aggregation type");
+        }
+      }
     } else {
-      std::vector<Value> data(keys);
-      data.emplace_back(aggrs_chunk.column_ptr(0)->get_value(i));
-      aggr_values_[keys] = data;
+      // 创建第一个数据
+      aggr_values_[keys] = values;
     }
   }
   return RC::SUCCESS;
 }
+
+/*
+keys.size()
+values.size()
+keys[0].get_int()
+values[0].get_int()
+aggr_values_[keys][0].get_int()
+*/
 
 void StandardAggregateHashTable::Scanner::open_scan()
 {
