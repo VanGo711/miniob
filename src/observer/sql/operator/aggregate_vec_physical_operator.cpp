@@ -42,6 +42,9 @@ AggregateVecPhysicalOperator::AggregateVecPhysicalOperator(vector<Expression *> 
         aggr_values_.insert(aggr_value);
         output_chunk_.add_column(make_unique<Column>(AttrType::INTS, sizeof(int)), i);
       } else if (aggregate_expr->value_type() == AttrType::FLOATS) {
+        void *aggr_value                       = malloc(sizeof(SumState<float>));
+        ((SumState<float> *)aggr_value)->value = 0;
+        aggr_values_.insert(aggr_value);
         output_chunk_.add_column(make_unique<Column>(AttrType::FLOATS, sizeof(float)), i);
       }
     } else {
