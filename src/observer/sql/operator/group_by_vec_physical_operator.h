@@ -39,9 +39,9 @@ public:
         if (group_by_exprs_[i]->value_type() == AttrType::CHARS) {
           out_chunk_.add_column(make_unique<Column>(AttrType::CHARS, sizeof(char) * group_by_exprs_[i]->value_length()), i);
         } else if (group_by_exprs_[i]->value_type() == AttrType::INTS) {
-          out_chunk_.add_column(make_unique<Column>(AttrType::INTS, sizeof(char)), i);
+          out_chunk_.add_column(make_unique<Column>(AttrType::INTS, sizeof(int)), i);
         } else if (group_by_exprs_[i]->value_type() == AttrType::FLOATS) {
-          out_chunk_.add_column(make_unique<Column>(AttrType::FLOATS, sizeof(char)), i);
+          out_chunk_.add_column(make_unique<Column>(AttrType::FLOATS, sizeof(float)), i);
         } else {
           ASSERT(false, "not supported aggregation type");
         }

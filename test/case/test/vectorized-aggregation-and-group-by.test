@@ -9,7 +9,6 @@ INSERT INTO aggregation_func VALUES (4, 15, 30.0, 'dei');
 INSERT INTO aggregation_func VALUES (4, 15, 31.11, 'cei');
 INSERT INTO aggregation_func VALUES (4, 13, 2.22, 'wei');
 
--- SELECT * FROM aggregation_func;
 
 -- echo 1. ungrouped aggregation
 
