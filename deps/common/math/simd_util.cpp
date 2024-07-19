@@ -23,8 +23,22 @@ int mm256_extract_epi32_var_indx(const __m256i vec, const unsigned int i)
 int mm256_sum_epi32(const int *values, int size)
 {
   // your code here
+  // 向量加法
+  __m256i sum_vec = _mm256_setzero_si256();
+  int i;
+  for (i = 0; i < size - 8; i += 8) {
+    __m256i vec = _mm256_loadu_si256((__m256i*)&values[i]);
+    sum_vec = _mm256_add_epi32(sum_vec, vec);
+  }
+  // 结果求和
+  int sum_array[8];
+  _mm256_storeu_si256((__m256i*)sum_array, sum_vec);
   int sum = 0;
-  for (int i = 0; i < size; i++) {
+  for (int j = 0; j < 8; j++) {
+    sum += sum_array[j];
+  }
+  // 剩余元素
+  for (; i < size; i++) {
     sum += values[i];
   }
   return sum;
@@ -33,8 +47,22 @@ int mm256_sum_epi32(const int *values, int size)
 float mm256_sum_ps(const float *values, int size)
 {
   // your code here
-  float sum = 0;
-  for (int i = 0; i < size; i++) {
+  // 向量加法
+  __m256 sum_vec = _mm256_setzero_ps();
+  int i;
+  for (i = 0; i <= size - 8; i += 8) {
+    __m256 vec = _mm256_loadu_ps(&values[i]);
+    sum_vec = _mm256_add_ps(sum_vec, vec);
+  }
+  // 结果求和
+  float sum_array[8];
+  _mm256_storeu_ps(sum_array, sum_vec);
+  float sum = 0.0f;
+  for (int j = 0; j < 8; j++) {
+    sum += sum_array[j];
+  }
+  // 剩余元素
+  for (; i < size; i++) {
     sum += values[i];
   }
   return sum;
